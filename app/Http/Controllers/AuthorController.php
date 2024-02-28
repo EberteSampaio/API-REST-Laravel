@@ -20,7 +20,8 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        return Author::created($request->all());
+       
+        return Author::create($request->all());
     }
 
     /**

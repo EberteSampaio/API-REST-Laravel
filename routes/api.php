@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/authors',[AuthorController::class, 'index']);
 Route::post('/authors-store',[AuthorController::class,'store']);
 
-Route::get('/genre',[GenreController::class,'index']);
-Route::post('/genre-store',[GenreController::class,'store']);
+Route::get('/genres',[GenreController::class,'index']);
+Route::post('/genres-store',[GenreController::class,'store']);
 
 Route::get('/books',[BookController::class,'index']);
 Route::post('/books-store',[BookController::class,'store']);
