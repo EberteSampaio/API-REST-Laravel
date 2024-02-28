@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 
 class BookController extends Controller
@@ -12,7 +13,7 @@ class BookController extends Controller
      */
     public function index()
     {
-        return "Acesso aos livros";
+        return  response()->json(Book::all(), Response::HTTP_OK);
     }
 
     /**

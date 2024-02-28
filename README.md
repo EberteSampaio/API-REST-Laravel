@@ -33,4 +33,78 @@ git clone git@github.com:EberteSampaio/API-REST-laravel.git
 
 ```
 gh repo clone EberteSampaio/API-REST-laravel
+
 ```
+
+## Rotas
+
+**GET**
+
+- Autores
+
+```php
+<?php
+
+Route::get('/authors',[AuthorController::class, 'index']);
+
+?>
+```
+
+- Gêneros
+
+```php
+<?php
+
+Route::get('/genres',[GenreController::class,'index']);
+
+?>
+```
+- Livros
+```php
+<?php
+
+Route::get('/books',[BookController::class,'index']);
+
+?>
+```
+
+
+
+
+
+**POST**
+
+- Autores
+
+```php
+<?php
+
+Route::post('/authors-store',[AuthorController::class,'store']);
+
+?>
+```
+
+- Gêneros
+
+
+```php
+<?php
+
+Route::post('/genres-store',[GenreController::class,'store']);
+
+?>
+```
+
+- Livros
+
+```php
+<?php
+
+Route::post('/books-store',[BookController::class,'store']);
+
+?>
+```
+
+
+
+

@@ -12,7 +12,7 @@ class GenreController extends Controller
      */
     public function index()
     {
-        return "Acesso aos gêneros dos livros";
+        return Genre::all();
     }
 
     /**
