@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class BookController extends Controller
@@ -58,24 +61,35 @@ class BookController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
+                $book = Book::findOrFail($id);
 
-            $book = Book::findOrFail($id);
+                if ($book->update($request->all())) {
+                    return response()->json(['Success' => 'Book data changed successfully!'], Response::HTTP_OK);
+                } else {
+                    throw new HttpException(Response::HTTP_BAD_REQUEST, "Error changing data in the {$book['book_name']} book. Check the passed parameters");
+                }
 
-            $book->update($request->all());
+        } catch (HttpException $e) {
 
-            return response()->json(['Success' => 'book data changed successfully!'],Response::HTTP_OK);
-
-        }catch( HttpException $e){
-            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
+            return response()->json(['error' => "erro ao sadfas}"], Response::HTTP_BAD_REQUEST);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            
+                if(Book::destroy($id))
+                    return response()->json(['success'=> 'sucessfully delete book.']);
+                else
+                    throw new Exception("error when deleting book with id {$id}", Response::HTTP_BAD_REQUEST);
+        }catch (Exception $e){
+            return response()->json(['error' => "{$e->getMessage()}"]);
+        }
     }
 }

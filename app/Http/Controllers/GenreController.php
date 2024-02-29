@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Genre;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
@@ -74,6 +75,17 @@ class GenreController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+
+            if(Genre::destroy($id))
+
+                return response()->json(['success'=> 'sucessfully delete genre.']);
+            else
+
+                throw new Exception("error when deleting Genre with id {$id}", Response::HTTP_BAD_REQUEST);
+        }catch (Exception $e){
+
+            return response()->json(['error' => "{$e->getMessage()}"]);
+        }
     }
 }
