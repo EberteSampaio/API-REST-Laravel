@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class BookController extends Controller
 {
@@ -13,7 +15,12 @@ class BookController extends Controller
      */
     public function index()
     {
-        return  response()->json(Book::all(), Response::HTTP_OK);
+
+        if($books = Book::all())
+
+            return response()->json($books, Response::HTTP_OK);
+        else
+            return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
     }
 
     /**
@@ -21,7 +28,18 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        return Book::create($request->all());
+        try {
+            Book::create($request->all());
+
+            return response()->json(['message' => 'Book successfully registered.'], Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+
+            return response()->json(['erros' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (\Exception $e) {
+
+            return response()->json(['mensagem' => 'Failed to register the Book.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     /**
@@ -29,7 +47,10 @@ class BookController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $book = Book::find($id);
+
+        return ($book) ? response()->json($book,Response::HTTP_FOUND):response()->json(['error' => 'Book Not Found'], Response::HTTP_NOT_FOUND);
+
     }
 
     /**
@@ -37,7 +58,17 @@ class BookController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+
+            $book = Book::findOrFail($id);
+
+            $book->update($request->all());
+
+            return response()->json(['Success' => 'book data changed successfully!'],Response::HTTP_OK);
+
+        }catch( HttpException $e){
+            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**

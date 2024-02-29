@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Author;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AuthorController extends Controller
 {
@@ -12,7 +15,11 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        return  Author::all();
+        if($authors = Author::all())
+
+            return response()->json($authors, Response::HTTP_OK);
+        else
+            return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
     }
 
     /**
@@ -20,8 +27,17 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-       
-        return Author::create($request->all());
+        try {
+            Author::create($request->all());
+
+            return response()->json(['message' => 'Author successfully registered.'], Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+
+            return response()->json(['erros' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (\Exception $e) {
+
+            return response()->json(['mensagem' => 'Failed to register the author.'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -29,15 +45,27 @@ class AuthorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $author = Author::find($id);
+
+        return ($author) ? response()->json($author,Response::HTTP_FOUND):response()->json(['error' => 'Author Not Found'], Response::HTTP_NOT_FOUND);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string|int $id)
     {
-        //
+        try{
+
+            $author = Author::findOrFail($id);
+
+            $author->update($request->all());
+
+            return response()->json(['Success' => 'Author data changed successfully!'],Response::HTTP_OK);
+
+        }catch( HttpException $e){
+            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
+        }
     }
 
     /**
