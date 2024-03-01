@@ -2,90 +2,46 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Author;
-use Exception;
-use Illuminate\Http\Response;
-use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Http\Requests\AuthorRequest;
+use App\Services\AuthorService;
+
+
 
 class AuthorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        if($authors = Author::all())
+    protected $authorService;
 
-            return response()->json($authors, Response::HTTP_OK);
-        else
-            return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
+    public function __construct()
+    {
+        $this->authorService = new AuthorService();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function index() : mixed
     {
-        try {
-            Author::create($request->all());
-
-            return response()->json(['message' => 'Author successfully registered.'], Response::HTTP_CREATED);
-        } catch (ValidationException $e) {
-
-            return response()->json(['erros' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
-        } catch (\Exception $e) {
-
-            return response()->json(['mensagem' => 'Failed to register the author.'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return $this->authorService->getAllAuthors();
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $author = Author::find($id);
 
-        return ($author) ? response()->json($author,Response::HTTP_FOUND):response()->json(['error' => 'Author Not Found'], Response::HTTP_NOT_FOUND);
+    public function store(AuthorRequest $request) : mixed
+    {
+      return $this->authorService->createAuthor($request);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string|int $id)
+
+    public function show(string|int $id) : mixed
     {
-        try{
-
-            $author = Author::findOrFail($id);
-
-            $author->update($request->all());
-
-            return response()->json(['Success' => 'Author data changed successfully!'],Response::HTTP_OK);
-
-        }catch( HttpException $e){
-            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
-        }
+        return $this->authorService->showAuthor($id);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+
+    public function update(AuthorRequest $request, string|int $id) : mixed
     {
-        
-        try{
+       return $this->authorService->updateAuthor($request, $id);
+    }
 
-            if(Author::destroy($id))
 
-                return response()->json(['success'=> 'sucessfully delete genre.']);
-            else
-
-                throw new Exception("error when deleting Author with id {$id}", Response::HTTP_BAD_REQUEST);
-        }catch (Exception $e){
-
-            return response()->json(['error' => "{$e->getMessage()}"]);
-        }
+    public function destroy(string|int $id) : mixed
+    {
+        return $this->authorService->destroyAuthor($id);
     }
 }
