@@ -80,7 +80,7 @@ class BookService
 
             if(Book::destroy($id))
 
-                return response()->json(['success'=> 'sucessfully delete genre.']);
+                return response()->json(['success'=> 'sucessfully delete genre.'],Response::HTTP_OK);
             else
 
                 throw new Exception("error when deleting Books with id {$id}", Response::HTTP_BAD_REQUEST);
@@ -91,14 +91,31 @@ class BookService
     }
 
     public function getBookOrGenre(Request $request){
-        $sqlBook = Book::query();
 
-        if(!empty($request->authorId)){
-            $sqlBook->where('author_id',$request->authorId);
-        }
-        if(!empty($request->genreId)){
-            $sqlBook->where('genre_id',$request->genreId);
-        }
-        dd($sqlBook);
+        try{
+
+            $sqlBook = Book::query();
+
+            if(!empty($request->authorId)){
+
+                $sqlBook->where('author_id',$request->authorId);
+            }
+            if(!empty($request->genreId)){
+
+                $sqlBook->where('genre_id',$request->genreId);
+            }
+
+            if(empty($book = $sqlBook->get())){
+
+                throw new HttpException(Response::HTTP_NOT_FOUND,"The requested book could not be found, please try new parameters");
+            }
+
+            return response()->json($book,Response::HTTP_OK);
+
+    }catch(HttpException $e){
+
+            return response()->json(['error'=>"{$e->getMessage()}"],Response::HTTP_NOT_FOUND);
+    }
+
     }
 }

@@ -47,7 +47,7 @@ class BookController extends Controller
         return $this->bookService->destroyBooks($id);
     }
 
-    public function listBookOrGenre(Request $request)
+    public function listAuthorOrGenre(Request $request)
     {
         return $this->bookService->getBookOrGenre($request);
     }
