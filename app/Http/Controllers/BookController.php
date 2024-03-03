@@ -2,15 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
+use App\Http\Requests\BookRequest;
 use App\Services\BookService;
-use Exception;
-use Illuminate\Database\QueryException;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class BookController extends Controller
 {
@@ -31,7 +25,7 @@ class BookController extends Controller
     }
 
 
-    public function store(Request $request) : mixed
+    public function store(BookRequest $request) : mixed
     {
         return $this->bookService->createBooks($request);
     }
@@ -51,5 +45,10 @@ class BookController extends Controller
     public function destroy(string $id) : mixed
     {
         return $this->bookService->destroyBooks($id);
+    }
+
+    public function listBookOrGenre(Request $request)
+    {
+        return $this->bookService->getBookOrGenre($request);
     }
 }

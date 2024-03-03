@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Http\Requests\BookRequest;
 use App\Models\Book;
 use Exception;
 use Illuminate\Http\Response;
@@ -26,7 +27,7 @@ class BookService
     /**
      * Store a newly created resource in storage.
      */
-    public function createBooks(Request $request) :mixed
+    public function createBooks(BookRequest $request) :mixed
     {
         try {
             Book::create($request->all());
@@ -87,5 +88,17 @@ class BookService
 
             return response()->json(['error' => "{$e->getMessage()}"]);
         }
+    }
+
+    public function getBookOrGenre(Request $request){
+        $sqlBook = Book::query();
+
+        if(!empty($request->authorId)){
+            $sqlBook->where('author_id',$request->authorId);
+        }
+        if(!empty($request->genreId)){
+            $sqlBook->where('genre_id',$request->genreId);
+        }
+        dd($sqlBook);
     }
 }

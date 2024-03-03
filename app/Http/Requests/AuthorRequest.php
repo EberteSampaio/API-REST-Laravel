@@ -22,14 +22,14 @@ class AuthorRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_author' => ['required','min:3'],
+            'author_name' => ['required'],
         ];
     }
 
     public function messages()
     {
         return [
-            "min"       => "The :attribute must be at least three letters long.",
+          //  "min"       => "The :attribute must be at least three letters long.",
             "required"  => "The :attribute is mandatory."
         ];
     }
@@ -37,7 +37,7 @@ class AuthorRequest extends FormRequest
     public function attributes()
     {
         return [
-            "name_author" => "author's name"
+            "author_name" => "author's name"
         ];
     }
 }

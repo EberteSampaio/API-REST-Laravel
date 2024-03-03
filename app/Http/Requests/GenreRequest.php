@@ -11,7 +11,7 @@ class GenreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class GenreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required']
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required' => 'It is necessary to specify the gender'
         ];
     }
 }

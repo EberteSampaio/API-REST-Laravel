@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Http\Requests\GenreRequest;
 use Illuminate\Http\Response;
 use App\Models\Genre;
 use Dotenv\Exception\ValidationException;
@@ -21,7 +22,7 @@ class GenreService {
             return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
     }
 
-    public function createGenre(Request $request) : mixed
+    public function createGenre(GenreRequest $request) : mixed
     {
         try {
             Genre::create($request->all());
@@ -64,7 +65,7 @@ class GenreService {
         try{
 
             if(Genre::destroy($id))
-                return response()->json(['success'=> 'sucessfully genre book.']);
+                return response()->json(['success'=> 'sucessfully delete genre.']);
             else
                 throw new Exception("error when deleting book with id {$id}", Response::HTTP_BAD_REQUEST);
         }catch (Exception $e){

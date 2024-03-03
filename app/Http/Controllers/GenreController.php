@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Genre;
+use App\Http\Requests\GenreRequest;
 use App\Services\GenreService;
 use Illuminate\Http\Request;
 
@@ -16,12 +16,12 @@ class GenreController extends Controller
         $this->genreService = new GenreService();
     }
 
-    public function indgetAllGenresx() : mixed
+    public function index() : mixed
     {
         return $this->genreService->getAllGenres();
     }
 
-    public function store(Request $request) : mixed
+    public function store(GenreRequest $request) : mixed
     {
         return $this->genreService->createGenre($request);
     }

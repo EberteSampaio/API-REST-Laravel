@@ -30,6 +30,7 @@ class AuthorService
     public function createAuthor(AuthorRequest $request) :mixed
     {
         try {
+
             Author::create($request->all());
 
             return response()->json(['message' => 'Author successfully registered.'], Response::HTTP_CREATED);
@@ -59,7 +60,10 @@ class AuthorService
     {
         try{
 
-            $author = Author::findOrFail($id);
+            if(empty($author = Author::findOrFail($id))){
+
+                throw new HttpException(Response::HTTP_BAD_REQUEST, 'error when changing author data');
+            }
 
             $author->update($request->all());
 
@@ -78,12 +82,13 @@ class AuthorService
 
         try{
 
-            if(Author::destroy($id))
-
-                return response()->json(['success'=> 'sucessfully delete genre.']);
-            else
+            if(!Author::destroy($id)){
 
                 throw new Exception("error when deleting Author with id {$id}", Response::HTTP_BAD_REQUEST);
+            }
+            
+            return response()->json(['success'=> 'sucessfully delete author.']);
+
         }catch (Exception $e){
 
             return response()->json(['error' => "{$e->getMessage()}"]);

@@ -35,6 +35,7 @@ Route::get('/books',[BookController::class,'index']);
 Route::put('/books/update/{id}',[BookController::class, 'update']);
 Route::delete('/books/delete/{id}',[BookController::class, 'destroy']);
 Route::post('/books-store',[BookController::class,'store']);
+Route::get('/book/search-genre-book/{authorId?}/{genreId?}', [BookController::class,'listBookOrGenre']);
 
 
 
