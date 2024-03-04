@@ -15,11 +15,11 @@ class GenreService {
     public function getAllGenres() : mixed
     {
 
-        if(empty($genres = Genre::all()))
-            return response()->json(['Error' =>['message' => 'An Error occurred in the request']],Response::HTTP_BAD_GATEWAY);
+        if($genres = Genre::all())
 
-        return response()->json($genres, Response::HTTP_OK);
-
+            return response()->json($genres, Response::HTTP_OK);
+        else
+            return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
     }
 
     public function createGenre(GenreRequest $request) : mixed
@@ -27,13 +27,13 @@ class GenreService {
         try {
             Genre::create($request->all());
 
-            return response()->json(['success' =>['message' => 'Genre successfully registered.']], Response::HTTP_CREATED);
+            return response()->json(['message' => 'Genre successfully registered.'], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
 
-            return response()->json(['Error' =>['message' => $e->getMessage()]], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['erros' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $e) {
 
-            return response()->json(['Error' =>['message'=> 'Failed to register the Genre.']], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['mensagem' => 'Failed to register the Genre.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -41,7 +41,7 @@ class GenreService {
     {
         $genre = Genre::find($id);
 
-        return ($genre) ? response()->json($genre,Response::HTTP_FOUND):response()->json(['Error' =>['message' => 'Genre Not Found']], Response::HTTP_NOT_FOUND);
+        return ($genre) ? response()->json($genre,Response::HTTP_FOUND):response()->json(['error' => 'Genre Not Found'], Response::HTTP_NOT_FOUND);
 
     }
 
@@ -53,10 +53,10 @@ class GenreService {
 
             $genre->update($request->all());
 
-            return response()->json(['Success' => ['message' =>'genre data changed successfully!']],Response::HTTP_OK);
+            return response()->json(['Success' => 'genre data changed successfully!'],Response::HTTP_OK);
 
         }catch( HttpException $e){
-            return response()->json(['Error' => ['message' => $e->getMessage()]],Response::HTTP_BAD_REQUEST);
+            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -65,11 +65,11 @@ class GenreService {
         try{
 
             if(Genre::destroy($id))
-                return response()->json(['success'=> ['message' => 'sucessfully delete genre.']]);
+                return response()->json(['success'=> 'sucessfully delete genre.']);
             else
-                throw new Exception("Error when deleting book with id {$id}", Response::HTTP_BAD_REQUEST);
+                throw new Exception("error when deleting book with id {$id}", Response::HTTP_BAD_REQUEST);
         }catch (Exception $e){
-            return response()->json(['Error' => ['message' => "{$e->getMessage()}"]]);
+            return response()->json(['error' => "{$e->getMessage()}"]);
     }
     }
 

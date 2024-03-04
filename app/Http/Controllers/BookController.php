@@ -51,9 +51,4 @@ class BookController extends Controller
     {
         return $this->bookService->getBookOrGenre($request);
     }
-
-    public function countBooksForGenre(Request $request){
-
-        return $this->bookService->countBookByGenre($request);
-    }
 }

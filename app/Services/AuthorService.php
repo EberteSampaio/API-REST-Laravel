@@ -21,7 +21,7 @@ class AuthorService
 
             return response()->json($authors, Response::HTTP_OK);
         else
-            return response()->json(['Error' =>['message' => 'An Error occurred in the request' ]],Response::HTTP_BAD_GATEWAY);
+            return response()->json(['Error' => 'An error occurred in the request' ],Response::HTTP_BAD_GATEWAY);
     }
 
     /**
@@ -33,13 +33,13 @@ class AuthorService
 
             Author::create($request->all());
 
-            return response()->json(['Success' => ['message' =>'Author successfully registered.']], Response::HTTP_CREATED);
+            return response()->json(['message' => 'Author successfully registered.'], Response::HTTP_CREATED);
         } catch (ValidationException $e) {
 
-            return response()->json(['Error' => ['message' => $e->errors()]], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(['erros' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (\Exception $e) {
 
-            return response()->json(['Error' => ['message' => 'Failed to register the author.']], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(['mensagem' => 'Failed to register the author.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -50,7 +50,7 @@ class AuthorService
     {
         $author = Author::find($id);
 
-        return ($author) ? response()->json($author,Response::HTTP_FOUND):response()->json(['Error' => ['message'=>'Author Not Found']], Response::HTTP_NOT_FOUND);
+        return ($author) ? response()->json($author,Response::HTTP_FOUND):response()->json(['error' => 'Author Not Found'], Response::HTTP_NOT_FOUND);
     }
 
     /**
@@ -62,15 +62,15 @@ class AuthorService
 
             if(empty($author = Author::findOrFail($id))){
 
-                throw new HttpException(Response::HTTP_BAD_REQUEST, 'Error when changing author data');
+                throw new HttpException(Response::HTTP_BAD_REQUEST, 'error when changing author data');
             }
 
             $author->update($request->all());
 
-            return response()->json(['Success' => ['message' =>'Author data changed successfully!']],Response::HTTP_OK);
+            return response()->json(['Success' => 'Author data changed successfully!'],Response::HTTP_OK);
 
         }catch( HttpException $e){
-            return response()->json(['Error' => ['message'=> $e->getMessage()]],Response::HTTP_BAD_REQUEST);
+            return response()->json(['Error' => $e->getMessage()],Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -84,14 +84,14 @@ class AuthorService
 
             if(!Author::destroy($id)){
 
-                throw new Exception("Error when deleting Author with id {$id}", Response::HTTP_BAD_REQUEST);
+                throw new Exception("error when deleting Author with id {$id}", Response::HTTP_BAD_REQUEST);
             }
-
-            return response()->json(['success'=>['message' => 'sucessfully delete author.']]);
+            
+            return response()->json(['success'=> 'sucessfully delete author.']);
 
         }catch (Exception $e){
 
-            return response()->json(['Error' =>['message' =>"{$e->getMessage()}"]] );
+            return response()->json(['error' => "{$e->getMessage()}"]);
         }
     }
 }
